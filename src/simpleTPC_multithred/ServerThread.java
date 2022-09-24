@@ -9,26 +9,32 @@ import java.net.Socket;
 public class ServerThread implements Runnable {
 	
 	private Socket socket;
-	public ServerThread (Socket socket) {
+	private ServerMain server_main;
+	
+	public ServerThread (Socket socket, ServerMain server_main) {
 		this.socket = socket;
+		this.server_main = server_main;
 	}
 	
 	@Override
 	public void run() {
 		try {
 			
-			System.out.println("Client has connected. ");
+			int client_number = server_main.getClientNumber();
+			
+			System.out.println("Client " + client_number + ". has connected. ");
+			
 			
 			// I/O buffers:
 			BufferedReader in_socket = new BufferedReader(new InputStreamReader (socket.getInputStream()));
 			PrintWriter out_socket = new PrintWriter(new OutputStreamWriter (socket.getOutputStream()), true);
 			
-			out_socket.println("Welcome! What's your name"); // send "Welcome" to the Client
+			out_socket.println("Welcome! your client number is: " + client_number + ". What's your name?"); // send "Welcome" to the Client
 			String message = in_socket.readLine(); //Receive "Thanks"
 			System.out.println("Client says: " + message); // display Client's message in the console
 			
 			socket.close();
-			System.out.println("Socket is closed.");
+			System.out.println("Client " + client_number + ". has disconnected.");
 			
 		} catch (Exception e) {
 			// TODO: handle exception
